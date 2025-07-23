@@ -12,34 +12,41 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Lấy toàn bộ lịch sử để tránh lỗi liên quan đến Git
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: '8.0.x'  # Giữ nguyên vì bạn đã chỉ định
 
     - name: Install NuGet CLI
-      uses: NuGet/setup-nuget@v1
+      uses: NuGet/setup-nuget@v2  # Cập nhật lên phiên bản mới nhất
 
     - name: Restore NuGet packages (sử dụng .sln)
       run: nuget restore BaiTapFPT.sln
+      shell: pwsh  # Chỉ định PowerShell để đảm bảo tương thích trên Windows
 
     - name: Build solution
       run: dotnet build BaiTapFPT.sln --configuration Release
+      shell: pwsh
 
     - name: Run tests and export TRX report
       run: |
         mkdir TestResults
-        dotnet test BaiTapFPT.sln --no-build --logger "trx;LogFileName=test-results.trx" --results-directory TestResults
+        dotnet test BaiTapFPT.sln --configuration Release --logger "trx;LogFileName=test-results.trx" --results-directory TestResults
+      shell: pwsh
 
     - name: Upload test report artifact
       uses: actions/upload-artifact@v4
       with:
         name: NUnit-TRX-Report
         path: TestResults/test-results.trx
+      if: always()  # Đảm bảo luôn upload artifact, kể cả khi test thất bại
 
     - name: Publish test results in GitHub UI
-      uses: EnricoMi/publish-unit-test-result-action@v2
-      if: always()
+      uses: actions/upload-artifact@v4  # Thay thế EnricoMi action
       with:
-        files: TestResults/test-results.trx
+        name: Test-Results-Summary
+        path: TestResults/test-results.trx
+      if: always()
