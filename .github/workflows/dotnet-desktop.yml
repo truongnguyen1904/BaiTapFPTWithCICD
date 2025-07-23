@@ -1,7 +1,9 @@
-name: Manual Run Tests
+name: Scheduled and Manual Test Run
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # Cho phép chạy thủ công
+  schedule:           # Lên lịch chạy định kỳ
+    - cron: '0 2 * * *'  # Chạy hàng ngày lúc 09:00 sáng (giờ VN là UTC+7)
 
 jobs:
   build-and-test:
@@ -14,16 +16,30 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x'  
+        dotnet-version: '8.0.x'
 
     - name: Install NuGet CLI
       uses: NuGet/setup-nuget@v1
 
-    - name: Restore NuGet packages 
-      run: nuget restore BaiTapFPT.sln
+    - name: Restore NuGet packages (sử dụng .sln)
+      run: nuget restore BaiTuanTuan3_NguyenChiTruong.sln
 
     - name: Build solution
-      run: dotnet build BaiTapFPT.sln --configuration Release
+      run: dotnet build BaiTuanTuan3_NguyenChiTruong.sln --configuration Release
 
-    - name: Run tests
-      run: dotnet test BaiTapFPT.sln --no-build --verbosity normal
+    - name: Run tests and export TRX report
+      run: |
+        mkdir TestResults
+        dotnet test BaiTuanTuan3_NguyenChiTruong.sln --no-build --logger "trx;LogFileName=test-results.trx" --results-directory TestResults
+
+    - name: Upload test report artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: NUnit-TRX-Report
+        path: TestResults/test-results.trx
+
+    - name: Publish test results in GitHub UI
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        files: TestResults/test-results.trx
