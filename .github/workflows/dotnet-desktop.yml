@@ -6,9 +6,8 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    - cron: '0 2 * * *'
-  workflow_dispatch:     
-
+    - cron: '0 2 * * *'  # chạy mỗi ngày lúc 9h sáng (giờ VN)
+  workflow_dispatch:     # cho phép chạy thủ công
 
 jobs:
   build:
@@ -25,13 +24,13 @@ jobs:
       uses: NuGet/setup-nuget@v2
 
     - name: Restore packages
-      run: nuget restore YourSolution.sln
+      run: nuget restore BaiTapFPT.sln
 
     - name: Build
-      run: msbuild YourSolution.sln /p:Configuration=Release
+      run: msbuild BaiTapFPT.sln /p:Configuration=Release
 
     - name: Run Tests
-      run: vstest.console.exe "YourTestProject\bin\Release\YourTestProject.dll" /logger:trx
+      run: vstest.console.exe "BaiTapFPT\bin\Release\BaiTapFPT.dll" /logger:trx
 
     - name: Upload Test Results
       uses: actions/upload-artifact@v4
