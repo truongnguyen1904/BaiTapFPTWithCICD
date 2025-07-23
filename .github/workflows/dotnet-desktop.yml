@@ -1,34 +1,29 @@
-name: .NET Framework CI
+name: Manual Run Tests
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  schedule:
-    - cron: '0 0 * * *'  # Chạy tự động mỗi ngày lúc 0:00 UTC (07:00 sáng giờ Việt Nam)
   workflow_dispatch:
-  
+
 jobs:
-  build:
+  build-and-test:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout source
+    - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Restore NuGet packages
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'  
+
+    - name: Install NuGet CLI
+      uses: NuGet/setup-nuget@v1
+
+    - name: Restore NuGet packages 
       run: nuget restore BaiTapFPT.sln
 
     - name: Build solution
-      run: msbuild BaiTapFPT.sln /p:Configuration=Release
+      run: dotnet build BaiTapFPT.sln --configuration Release
 
-    - name: Run unit tests using dotnet test
-      run: dotnet test BaiTapFPT\BaiTapFPT.csproj --configuration Release --logger "trx"
-
-    - name: Publish Test Results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: TestResults
-        path: '**/TestResults/*.trx'
+    - name: Run tests
+      run: dotnet test BaiTapFPT.sln --no-build --verbosity normal
