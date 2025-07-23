@@ -22,15 +22,15 @@ jobs:
       uses: NuGet/setup-nuget@v1
 
     - name: Restore NuGet packages (sử dụng .sln)
-      run: nuget restore BaiTuanTuan3_NguyenChiTruong.sln
+      run: nuget restore BaiTapFPT.sln
 
     - name: Build solution
-      run: dotnet build BaiTuanTuan3_NguyenChiTruong.sln --configuration Release
+      run: dotnet build BaiTapFPT.sln --configuration Release
 
     - name: Run tests and export TRX report
       run: |
         mkdir TestResults
-        dotnet test BaiTuanTuan3_NguyenChiTruong.sln --no-build --logger "trx;LogFileName=test-results.trx" --results-directory TestResults
+        dotnet test BaiTapFPT.sln --no-build --logger "trx;LogFileName=test-results.trx" --results-directory TestResults
 
     - name: Upload test report artifact
       uses: actions/upload-artifact@v4
