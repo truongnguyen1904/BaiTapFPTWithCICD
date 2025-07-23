@@ -6,34 +6,29 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    - cron: '0 2 * * *'  # chạy mỗi ngày lúc 9h sáng (giờ VN)
-  workflow_dispatch:     # cho phép chạy thủ công
-
+    - cron: '0 0 * * *'  # Chạy tự động mỗi ngày lúc 0:00 UTC (07:00 sáng giờ Việt Nam)
+  workflow_dispatch:
+  
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+    - name: Checkout source
+      uses: actions/checkout@v3
 
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v2
+    - name: Restore NuGet packages
+      run: nuget restore YourSolution.sln
 
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v2
+    - name: Build solution
+      run: msbuild YourSolution.sln /p:Configuration=Release
 
-    - name: Restore packages
-      run: nuget restore BaiTapFPT.sln
+    - name: Run unit tests using dotnet test
+      run: dotnet test BaiTapFPT\BaiTapFPT.csproj --configuration Release --logger "trx"
 
-    - name: Build
-      run: msbuild BaiTapFPT.sln /p:Configuration=Release
-
-    - name: Run Tests
-      run: vstest.console.exe "BaiTapFPT\bin\Release\BaiTapFPT.dll" /logger:trx
-
-    - name: Upload Test Results
-      uses: actions/upload-artifact@v4
+    - name: Publish Test Results
+      if: always()
+      uses: actions/upload-artifact@v3
       with:
         name: TestResults
-        path: '**/*.trx'
+        path: '**/TestResults/*.trx'
