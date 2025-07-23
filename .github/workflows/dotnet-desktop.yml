@@ -1,0 +1,38 @@
+name: .NET Framework CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * *'  
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
+
+    - name: Restore packages
+      run: nuget restore YourSolution.sln
+
+    - name: Build
+      run: msbuild YourSolution.sln /p:Configuration=Release
+
+    - name: Run Tests
+      run: vstest.console.exe "YourTestProject\bin\Release\YourTestProject.dll" /logger:trx
+
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: TestResults
+        path: '**/*.trx'
