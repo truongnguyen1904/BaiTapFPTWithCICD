@@ -7,7 +7,7 @@ using System;
 
 namespace BaiTapFPT.Tests
 {
-    [TestFixture, Category("Signup")]
+    [TestFixture, Category("Signup"), Parallelizable(ParallelScope.All)]
     public class SignupTests : BaseTest
     {
         private SignupPage signupPage;
@@ -22,7 +22,7 @@ namespace BaiTapFPT.Tests
             user = new SignupModel
             {
                 Name = "Truong Tester",
-                Email = $"truong{new Random().Next(1000, 9999)}@test.com",
+                Email = $"truong{new Random().Next(1000, 9999)}@test.Value.com",
                 Password = "123456",
                 Day = "1",
                 Month = "January",
@@ -40,15 +40,15 @@ namespace BaiTapFPT.Tests
         [Test]
         public void SignupWithValidInfoWithFullFieldDetail()
         {
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open Signup page", () => signupPage.OpenSignupPage());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Enter name", () => signupPage.EnterName(user.Name));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Enter email", () => signupPage.EnterEmail(user.Email));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click signup", () => signupPage.ClickSignup());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Fill account info", () => detailsPage.FillAccountInfo(user.Password, user.Day, user.Month, user.Year));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Fill address info", () => detailsPage.FillAddressInfo(user.FirstName, user.LastName, user.Address, user.City, user.State, user.Zipcode, user.MobileNumber));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click create account", () => detailsPage.ClickCreateAccount());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Signup page", () => signupPage.OpenSignupPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter name", () => signupPage.EnterName(user.Name));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter email", () => signupPage.EnterEmail(user.Email));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click signup", () => signupPage.ClickSignup());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Fill account info", () => detailsPage.FillAccountInfo(user.Password, user.Day, user.Month, user.Year));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Fill address info", () => detailsPage.FillAddressInfo(user.FirstName, user.LastName, user.Address, user.City, user.State, user.Zipcode, user.MobileNumber));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click create account", () => detailsPage.ClickCreateAccount());
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Verify account created", () =>
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Verify account created", () =>
             {
                 Assert.That(driver.PageSource, Does.Contain("Account Created!"), "Don't create an account");
             });
@@ -57,15 +57,15 @@ namespace BaiTapFPT.Tests
         [Test]
         public void SignupWithValidInfoWithEmptyFieldRequired()
         {
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open Signup page", () => signupPage.OpenSignupPage());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Enter name", () => signupPage.EnterName(user.Name));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Enter email", () => signupPage.EnterEmail(user.Email));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click signup", () => signupPage.ClickSignup());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Fill account info without password", () => detailsPage.FillAccountInfo("", user.Day, user.Month, user.Year));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Fill address info without required fields", () => detailsPage.FillAddressInfo("", "", "", "", "", "", ""));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click create account", () => detailsPage.ClickCreateAccount());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Signup page", () => signupPage.OpenSignupPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter name", () => signupPage.EnterName(user.Name));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter email", () => signupPage.EnterEmail(user.Email));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click signup", () => signupPage.ClickSignup());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Fill account info without password", () => detailsPage.FillAccountInfo("", user.Day, user.Month, user.Year));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Fill address info without required fields", () => detailsPage.FillAddressInfo("", "", "", "", "", "", ""));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click create account", () => detailsPage.ClickCreateAccount());
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Verify password required", () =>
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Verify password required", () =>
             {
                 string isRequired = signupPage.GetPasswordRequiredAttribute();
                 Assert.That(isRequired, Is.EqualTo("true"), "Password field is not required.");
@@ -75,12 +75,12 @@ namespace BaiTapFPT.Tests
         [Test]
         public void SignupWithEmptyName()
         {
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open Signup page", () => signupPage.OpenSignupPage());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Enter empty name", () => signupPage.EnterName(""));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Enter email", () => signupPage.EnterEmail(user.Email));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click signup", () => signupPage.ClickSignup());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Signup page", () => signupPage.OpenSignupPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter empty name", () => signupPage.EnterName(""));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter email", () => signupPage.EnterEmail(user.Email));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click signup", () => signupPage.ClickSignup());
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Verify name required", () =>
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Verify name required", () =>
             {
                 string isRequired = signupPage.GetNameRequiredAttribute();
                 Assert.That(isRequired, Is.EqualTo("true"), "Name field is not required.");
@@ -90,12 +90,12 @@ namespace BaiTapFPT.Tests
         [Test]
         public void SignupWithEmptyEmail()
         {
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open Signup page", () => signupPage.OpenSignupPage());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Enter name", () => signupPage.EnterName(user.Name));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Enter empty email", () => signupPage.EnterEmail(""));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click signup", () => signupPage.ClickSignup());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Signup page", () => signupPage.OpenSignupPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter name", () => signupPage.EnterName(user.Name));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter empty email", () => signupPage.EnterEmail(""));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click signup", () => signupPage.ClickSignup());
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Verify email required", () =>
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Verify email required", () =>
             {
                 string isRequired = signupPage.GetEmailRequiredAttribute();
                 Assert.That(isRequired, Is.EqualTo("true"), "Email field is not required.");
@@ -105,12 +105,12 @@ namespace BaiTapFPT.Tests
         [Test]
         public void SignupWithInvalidEmailFormat()
         {
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open Signup page", () => signupPage.OpenSignupPage());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Enter name", () => signupPage.EnterName(user.Name));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Enter invalid email", () => signupPage.EnterEmail("truong123"));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click signup", () => signupPage.ClickSignup());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Signup page", () => signupPage.OpenSignupPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter name", () => signupPage.EnterName(user.Name));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter invalid email", () => signupPage.EnterEmail("truong123"));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click signup", () => signupPage.ClickSignup());
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Check validation message", () =>
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Check validation message", () =>
             {
                 string validationMsg = signupPage.GetEmailValidationMessage();
                 Assert.That(validationMsg, Is.Not.Empty, "Expected validation message not displayed for invalid email format.");
@@ -120,12 +120,12 @@ namespace BaiTapFPT.Tests
         [Test]
         public void SignupWithExistingEmail()
         {
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open Signup page", () => signupPage.OpenSignupPage());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Enter name", () => signupPage.EnterName(user.Name));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Enter existing email", () => signupPage.EnterEmail("truongnguyen1904@gmail.com"));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click signup", () => signupPage.ClickSignup());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Signup page", () => signupPage.OpenSignupPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter name", () => signupPage.EnterName(user.Name));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter existing email", () => signupPage.EnterEmail("truongnguyen1904@gmail.com"));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click signup", () => signupPage.ClickSignup());
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Verify existing email error", () =>
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Verify existing email error", () =>
             {
                 string errorMsg = signupPage.GetExistingEmailErrorMessage();
                 Assert.That(errorMsg, Is.EqualTo("Email Address already exist!"), "Email Address not already exist");

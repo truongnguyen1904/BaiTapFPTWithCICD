@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BaiTapFPT.Tests
 {
-    [TestFixture, Category("ProductWithLogin")]
+    [TestFixture, Category("ProductWithLogin"), Parallelizable(ParallelScope.All)]
     internal class ProductTestsWithLogin: BaseTest
     {
 
@@ -34,24 +34,24 @@ namespace BaiTapFPT.Tests
         
         private void LoginWithValidCredentials()
         {
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open Login page", () => loginPage.OpenLoginPage());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Enter email", () => loginPage.EnterEmail(validEmail));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Enter password", () => loginPage.EnterPassword(validPassword));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click login", () => loginPage.ClickLogin());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Login page", () => loginPage.OpenLoginPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter email", () => loginPage.EnterEmail(validEmail));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter password", () => loginPage.EnterPassword(validPassword));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click login", () => loginPage.ClickLogin());
 
             string actualText = loginPage.GetLoggedInText();
             Assert.That(actualText, Does.Contain("Logged in as"), "Login failed with valid credentials.");
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Login successful", () => { });
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Login successful", () => { });
             HideBottomAdBanner();
         }
         private void SearchProductWithKeyword(string keyword)
         {
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click search bar", () => productsPage.ClickSearchBar());
-            TestHelper.CaptureStepAndScreenshot(test, driver, $"Enter keyword '{keyword}'", () => productsPage.SendKeySearchBar(keyword));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click search", () => productsPage.SubmitSearch());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click search bar", () => productsPage.ClickSearchBar());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, $"Enter keyword '{keyword}'", () => productsPage.SendKeySearchBar(keyword));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click search", () => productsPage.SubmitSearch());
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, $"Verify results for keyword '{keyword}'", () =>
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, $"Verify results for keyword '{keyword}'", () =>
             {
                 Assert.That(productsPage.AreSearchResultsRelevant(keyword.ToLower()), $"Search results are not relevant to '{keyword}'");
             });
@@ -59,7 +59,7 @@ namespace BaiTapFPT.Tests
             var productNames = productsPage.GetSearchResultProductNames();
             foreach (var name in productNames)
             {
-                test.Info($"Found product: {name}");
+                test.Value.Info($"Found product: {name}");
             }
         }
 
@@ -69,13 +69,13 @@ namespace BaiTapFPT.Tests
         {
             LoginWithValidCredentials();
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open Product Page", () => productsPage.OpenProductPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Product Page", () => productsPage.OpenProductPage());
             HideBottomAdBanner();
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click add to cart", () => productsPage.ClickAddToCart());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open cart", () => productsPage.ClickViewCart());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click add to cart", () => productsPage.ClickAddToCart());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open cart", () => productsPage.ClickViewCart());
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Check product in cart", () =>
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Check product in cart", () =>
             {
                 Assert.That(cartPage.IsProductInCart(), "Product doesn't exist in cart");
             });
@@ -85,17 +85,17 @@ namespace BaiTapFPT.Tests
         public void AddProductDouble()
         {
             LoginWithValidCredentials();
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open cart page", () => productsPage.ClickCartPage());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Delete all product in cart", () => cartPage.DeleteAllProducts());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open cart page", () => productsPage.ClickCartPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Delete all product in cart", () => cartPage.DeleteAllProducts());
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open Product Page", () => productsPage.OpenProductPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Product Page", () => productsPage.OpenProductPage());
             HideBottomAdBanner();
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Add first product to cart", () => productsPage.ClickAddToCart());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click continue shopping", () => productsPage.ClickContinueShopping());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Add same product again", () => productsPage.ClickAddToCart());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open cart", () => productsPage.ClickViewCart());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Add first product to cart", () => productsPage.ClickAddToCart());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click continue shopping", () => productsPage.ClickContinueShopping());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Add same product again", () => productsPage.ClickAddToCart());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open cart", () => productsPage.ClickViewCart());
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Verify product is in cart with quantity 2", () =>
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Verify product is in cart with quantity 2", () =>
             {
                 Assert.That(cartPage.IsProductInCart(), "Product not found in cart");
                 cartPage.ProductQuantity(2);
@@ -107,20 +107,20 @@ namespace BaiTapFPT.Tests
         {
             LoginWithValidCredentials();
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open Product Page", () => productsPage.OpenProductPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Product Page", () => productsPage.OpenProductPage());
             HideBottomAdBanner();
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Select category 'MEN'", () => productsPage.SelectCategory());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Select category 'MEN'", () => productsPage.SelectCategory());
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Verify selected category", () =>
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Verify selected category", () =>
             {
                 Assert.That(productsPage.GetCurrentCategory(), Is.EqualTo("Women > Dress"), "Incorrect category selected");
             });
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click add to cart", () => productsPage.ClickAddToCart());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open cart", () => productsPage.ClickViewCart());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click add to cart", () => productsPage.ClickAddToCart());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open cart", () => productsPage.ClickViewCart());
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Check product in cart", () =>
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Check product in cart", () =>
             {
                 Assert.That(cartPage.IsProductInCart(), "Product not found in cart");
             });
@@ -131,12 +131,12 @@ namespace BaiTapFPT.Tests
         {
             LoginWithValidCredentials();
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open Product Page", () => productsPage.OpenProductPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Product Page", () => productsPage.OpenProductPage());
             HideBottomAdBanner();
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Select brand 'POLO'", () => productsPage.SelectBrand());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Select brand 'POLO'", () => productsPage.SelectBrand());
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Verify active brand", () =>
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Verify active brand", () =>
             {
                 Assert.That(productsPage.GetActiveBrand(), Is.EqualTo("Polo"), "Incorrect brand selected");
             });
@@ -147,14 +147,14 @@ namespace BaiTapFPT.Tests
         {
             LoginWithValidCredentials();
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open Product Page", () => productsPage.OpenProductPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Product Page", () => productsPage.OpenProductPage());
             HideBottomAdBanner();
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Hover product", () => productsPage.HoverProduct());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click add to cart when hover", () => productsPage.ClickAddToCartHover());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open cart", () => productsPage.ClickViewCart());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Hover product", () => productsPage.HoverProduct());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click add to cart when hover", () => productsPage.ClickAddToCartHover());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open cart", () => productsPage.ClickViewCart());
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Check product in cart", () =>
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Check product in cart", () =>
             {
                 Assert.That(cartPage.IsProductInCart(), "Product doesn't exist in cart");
             });
@@ -164,7 +164,7 @@ namespace BaiTapFPT.Tests
         public void SearchProduct()
         {
             LoginWithValidCredentials();
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open Product Page", () => productsPage.OpenProductPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Product Page", () => productsPage.OpenProductPage());
             SearchProductWithKeyword(key);
         }
 
@@ -172,16 +172,16 @@ namespace BaiTapFPT.Tests
         public void SearchProductAndAddToCart()
         {
             LoginWithValidCredentials();
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open Product Page", () => productsPage.OpenProductPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Product Page", () => productsPage.OpenProductPage());
 
             SearchProductWithKeyword(key);
             HideBottomAdBanner();
 
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Add product to cart", () => productsPage.ClickAddToCart());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "View cart", () => productsPage.ClickViewCart());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Add product to cart", () => productsPage.ClickAddToCart());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "View cart", () => productsPage.ClickViewCart());
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Verify product in cart", () =>
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Verify product in cart", () =>
             {
                 Assert.That(cartPage.IsProductInCart(), "Product doesn't exist in cart");
             });
@@ -191,32 +191,32 @@ namespace BaiTapFPT.Tests
         public void SearchProductThenViewProductAndWriteReview()
         {
             LoginWithValidCredentials();
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open Product Page", () => productsPage.OpenProductPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Product Page", () => productsPage.OpenProductPage());
             SearchProductWithKeyword(key);
             HideBottomAdBanner();
 
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click view product", () => productsPage.ClickViewProduct());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Write review", () => productsPage.WriteYourReview());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Submit review", () => productsPage.SubmitReview());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Check success message", () => productsPage.CheckSuccessMessage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click view product", () => productsPage.ClickViewProduct());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Write review", () => productsPage.WriteYourReview());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Submit review", () => productsPage.SubmitReview());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Check success message", () => productsPage.CheckSuccessMessage());
         }
 
         [Test]
         public void SearchProductThenViewProductAndChangeQuantity()
         {
             LoginWithValidCredentials();
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open cart page", () => productsPage.ClickCartPage());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Delete all product in cart", () => cartPage.DeleteAllProducts());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open Product Page", () => productsPage.OpenProductPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open cart page", () => productsPage.ClickCartPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Delete all product in cart", () => cartPage.DeleteAllProducts());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Product Page", () => productsPage.OpenProductPage());
             SearchProductWithKeyword(key);
             HideBottomAdBanner();
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Click view product", () => productsPage.ClickViewProduct());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Set quantity", () => productsPage.SetQuantity(qualiti));
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Add to cart", () => productsPage.AddToCartInDetail());
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Open cart", () => productsPage.ClickViewCart());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click view product", () => productsPage.ClickViewProduct());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Set quantity", () => productsPage.SetQuantity(qualiti));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Add to cart", () => productsPage.AddToCartInDetail());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open cart", () => productsPage.ClickViewCart());
 
-            TestHelper.CaptureStepAndScreenshot(test, driver, "Verify quantity in cart", () =>
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Verify quantity in cart", () =>
             {
                 Assert.That(cartPage.IsProductInCart(), "Product not found in cart");
                 cartPage.ProductQuantity(qualiti);

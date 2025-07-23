@@ -9,54 +9,50 @@ using System.Threading;
 public class BaseTest
 {
     protected IWebDriver driver;
+
+    private static ThreadLocal<ExtentTest> parentTest = new ThreadLocal<ExtentTest>();
+    protected ThreadLocal<ExtentTest> test = new ThreadLocal<ExtentTest>();
+
     protected ExtentReports extent;
-    protected ExtentTest parentTest;  
-    protected ExtentTest test;       
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
         extent = ExtentReportManager.GetInstance();
+
+        string className = GetType().Name;
+        parentTest.Value = extent.CreateTest(className);
     }
 
     [SetUp]
     public void SetUp()
     {
-        string browserType = "chrome";
-        string appURL = "https://automationexercise.com/";
-
-        CreateDriver.SetDriver(browserType, appURL);
+        // Init driver cho từng thread
+        CreateDriver.SetDriver("chrome", "https://automationexercise.com/");
         driver = CreateDriver.GetDriver();
 
-        string className = GetType().Name;
-        parentTest = extent.CreateTest(className);
-
+        // Tạo node test.Value riêng cho từng test.Value
         string testName = TestContext.CurrentContext.Test.MethodName;
-        test = parentTest.CreateNode(testName);   
+        test.Value = parentTest.Value.CreateNode(testName);
     }
 
-   
-    public void HideBottomAdBanner()
+    protected void HideBottomAdBanner()
     {
         try
         {
-            ((IJavaScriptExecutor)driver).ExecuteScript(@"
-            window.scrollBy(0, 200); 
-            var banner = document.querySelector('.bottom-banner'); 
-            if (banner) banner.style.display = 'none';
-        ");
+            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+            js.ExecuteScript("document.querySelectorAll('iframe').forEach(e => e.style.display = 'none');");
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Hide ad error: " + ex.Message);
+            Console.WriteLine("Could not hide ads: " + ex.Message);
         }
     }
 
     public void CaptureAndAddScreenshot(string stepName)
     {
         string screenshotPath = ScreenshotHelper.CaptureScreenshot(driver, stepName);
-
-        test.AddScreenCaptureFromPath(screenshotPath);
+        test.Value.AddScreenCaptureFromPath(screenshotPath);
     }
 
     [TearDown]
@@ -68,19 +64,18 @@ public class BaseTest
         if (status == NUnit.Framework.Interfaces.TestStatus.Failed)
         {
             string screenshotPath = ScreenshotHelper.CaptureScreenshot(driver, TestContext.CurrentContext.Test.Name);
-            test.Fail("Test Failed: " + message);
+            test.Value.Fail("Test Failed: " + message);
             if (screenshotPath != null)
-                test.AddScreenCaptureFromPath(screenshotPath);
+                test.Value.AddScreenCaptureFromPath(screenshotPath);
         }
         else if (status == NUnit.Framework.Interfaces.TestStatus.Passed)
         {
-            test.Pass("Test Passed");
+            test.Value.Pass("Test Passed");
         }
         else
         {
-            test.Warning("Test had unexpected status: " + status);
+            test.Value.Warning("Test had unexpected status: " + status);
         }
-
 
         CreateDriver.QuitDriver();
     }

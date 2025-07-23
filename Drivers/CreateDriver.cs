@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using System;
@@ -9,11 +8,11 @@ namespace BaiTapFPT.Drivers
 {
     public class CreateDriver
     {
-        private static IWebDriver driver;
+        private static ThreadLocal<IWebDriver> driver = new ThreadLocal<IWebDriver>();
 
         public static IWebDriver GetDriver()
         {
-            return driver;
+            return driver.Value;
         }
 
         public static void SetDriver(string browserType, string appURL)
@@ -21,27 +20,33 @@ namespace BaiTapFPT.Drivers
             switch (browserType.ToLower())
             {
                 case "chrome":
-                    driver = InitChromeDriver(appURL);
+                    driver.Value = InitChromeDriver(appURL);
                     break;
                 case "firefox":
-                    driver = InitFirefoxDriver(appURL);
+                    driver.Value = InitFirefoxDriver(appURL);
                     break;
                 default:
-                    Console.WriteLine("Browser is not helper. Open Chrome");
-                    driver = InitChromeDriver(appURL);
+                    Console.WriteLine("Browser is not supported. Opening Chrome by default.");
+                    driver.Value = InitChromeDriver(appURL);
                     break;
             }
         }
 
         private static IWebDriver InitChromeDriver(string appURL)
         {
+            var options = new ChromeOptions();
+            options.AddArgument("start-maximized");
+
+            var chromeDriverService = ChromeDriverService.CreateDefaultService(
+                @"C:\Users\HP\Downloads\BaiTapFPT\BaiTapFPT\driver");
+
             Console.WriteLine("Open Chrome");
-            driver = new ChromeDriver();
-            driver.Manage().Window.Maximize();
-            driver.Navigate().GoToUrl(appURL);
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-            return driver;
+
+            var localDriver = new ChromeDriver(chromeDriverService, options);
+            localDriver.Navigate().GoToUrl(appURL);
+            localDriver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
+            localDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            return localDriver;
         }
 
         private static IWebDriver InitFirefoxDriver(string appURL)
@@ -49,28 +54,27 @@ namespace BaiTapFPT.Drivers
             Console.WriteLine("Open Firefox");
 
             var profile = new FirefoxProfile();
-
-            profile.SetPreference("network.proxy.type", 0); 
+            profile.SetPreference("network.proxy.type", 0);
 
             var options = new FirefoxOptions
             {
                 Profile = profile
             };
-            driver = new FirefoxDriver();
-            driver.Manage().Window.Maximize();
-            driver.Navigate().GoToUrl(appURL);
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-            return driver;
+
+            var localDriver = new FirefoxDriver(options);
+            localDriver.Manage().Window.Maximize();
+            localDriver.Navigate().GoToUrl(appURL);
+            localDriver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
+            localDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            return localDriver;
         }
 
         public static void QuitDriver()
         {
-            Thread.Sleep(3000);
-            if (driver != null)
+            if (driver.Value != null)
             {
-                driver.Quit();
-                driver = null;
+                driver.Value.Quit();
+                driver.Value = null;
             }
         }
     }
