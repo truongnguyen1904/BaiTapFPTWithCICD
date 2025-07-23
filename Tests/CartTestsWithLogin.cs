@@ -7,6 +7,7 @@ using System;
 
 namespace BaiTapFPT.Tests
 {
+    [TestFixture, Category("Cart")]
     public class CartTestsWithLogin : BaseTest
     {
         private LoginPage loginPage;
