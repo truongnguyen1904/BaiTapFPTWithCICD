@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace BaiTapFPT.Tests
 {
+    [TestFixture, Category("ProductWithLogin")]
     internal class ProductTestsWithLogin: BaseTest
     {
 
