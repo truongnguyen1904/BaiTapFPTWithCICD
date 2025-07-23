@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace BaiTapFPT.Tests
 {
-    [TestFixture]
+    [TestFixture, Category("ProductWithOutLogin")]
     public class ProductTestsWithoutLogin : BaseTest
     {
         private ProductsPage productsPage;
