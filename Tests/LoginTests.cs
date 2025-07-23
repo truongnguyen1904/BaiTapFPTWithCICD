@@ -6,6 +6,7 @@ using OpenQA.Selenium;
 
 namespace BaiTapFPT.Tests
 {
+    [TestFixture, Category("Login")]
     public class LoginTests : BaseTest
     {
         private LoginPage loginPage;
