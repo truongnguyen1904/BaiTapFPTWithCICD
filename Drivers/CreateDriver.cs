@@ -25,9 +25,10 @@ namespace BaiTapFPT.Drivers
                 case "firefox":
                     driver.Value = InitFirefoxDriver(appURL);
                     break;
+                
                 default:
                     Console.WriteLine("Browser is not supported. Opening Chrome by default.");
-                    driver.Value = InitChromeDriver(appURL);
+                    driver.Value = InitFirefoxDriver(appURL);
                     break;
             }
         }
@@ -69,13 +70,14 @@ namespace BaiTapFPT.Drivers
             return localDriver;
         }
 
-        public static void QuitDriver()
+        public static void QuitDriver(IWebDriver driver)
         {
-            if (driver.Value != null)
+            if (driver != null)
             {
-                driver.Value.Quit();
-                driver.Value = null;
+                driver.Quit();
+                driver = null;
             }
         }
+
     }
 }

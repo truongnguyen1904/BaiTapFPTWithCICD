@@ -19,91 +19,91 @@ namespace BaiTapFPT.Tests
         [SetUp]
         public void TestSetUp()
         {
-            loginPage = new LoginPage(driver);
+            loginPage = new LoginPage(driver.Value);
         }
 
         [Test]
         public void LoginWithValidAccount()
         {
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Login page", () => loginPage.OpenLoginPage());
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter email", () => loginPage.EnterEmail(validEmail));
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter password", () => loginPage.EnterPassword(validPassword));
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click login", () => loginPage.ClickLogin());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter email", () => loginPage.EnterEmail(validEmail));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter password", () => loginPage.EnterPassword(validPassword));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Click login", () => loginPage.ClickLogin());
 
             string actualText = loginPage.GetLoggedInText();
             Assert.That(actualText, Does.Contain("Logged in as"), "Login failed with valid credentials.");
 
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Login successful", () => { });
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Login successful", () => { });
         }
 
         [Test]
         public void LoginWithWrongPassword()
         {
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Login page", () => loginPage.OpenLoginPage());
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter email", () => loginPage.EnterEmail(validEmail));
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter wrong password", () => loginPage.EnterPassword(wrongPassword));
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click login", () => loginPage.ClickLogin());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter email", () => loginPage.EnterEmail(validEmail));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter wrong password", () => loginPage.EnterPassword(wrongPassword));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Click login", () => loginPage.ClickLogin());
 
             string errorMsg = loginPage.GetErrorMessage();
             Assert.That(errorMsg, Is.EqualTo("Your email or password is incorrect!"), "Incorrect error message displayed");
 
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Login fail with wrong password", () => { });
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Login fail with wrong password", () => { });
         }
 
         [Test]
         public void LoginWithEmptyPassword()
         {
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Login page", () => loginPage.OpenLoginPage());
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter email", () => loginPage.EnterEmail(validEmail));
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter empty password", () => loginPage.EnterPassword(""));
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click login", () => loginPage.ClickLogin());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter email", () => loginPage.EnterEmail(validEmail));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter empty password", () => loginPage.EnterPassword(""));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Click login", () => loginPage.ClickLogin());
 
             string isRequired = loginPage.GetPasswordRequiredAttribute();
             Assert.That(isRequired, Is.EqualTo("true"), "Password field is not required");
 
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Login fail with empty password", () => { });
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Login fail with empty password", () => { });
         }
 
         [Test]
         public void LoginWithEmptyEmail()
         {
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Login page", () => loginPage.OpenLoginPage());
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter email empty", () => loginPage.EnterEmail(""));
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter password", () => loginPage.EnterPassword(validPassword));
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click login", () => loginPage.ClickLogin());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter email empty", () => loginPage.EnterEmail(""));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter password", () => loginPage.EnterPassword(validPassword));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Click login", () => loginPage.ClickLogin());
 
             string isRequired = loginPage.GetEmailRequiredAttribute();
             Assert.That(isRequired, Is.EqualTo("true"), "Email field is not required");
 
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Login fail with empty email", () => { });
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Login fail with empty email", () => { });
         }
 
         [Test]
         public void LoginWithNonRegisteredEmail()
         {
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Login page", () => loginPage.OpenLoginPage());
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter non registered email", () => loginPage.EnterEmail(nonValidEmail));
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter password", () => loginPage.EnterPassword(validPassword));
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click login", () => loginPage.ClickLogin());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter non registered email", () => loginPage.EnterEmail(nonValidEmail));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter password", () => loginPage.EnterPassword(validPassword));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Click login", () => loginPage.ClickLogin());
 
             string errorMsg = loginPage.GetErrorMessage();
             Assert.That(errorMsg, Is.EqualTo("Your email or password is incorrect!"), "Incorrect error message for non-registered email");
 
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Login fail with non registered email", () => { });
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Login fail with non registered email", () => { });
         }
 
         [Test]
         public void LoginWithInvalidEmailFormat()
         {
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Open Login page", () => loginPage.OpenLoginPage());
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter invalid format email", () => loginPage.EnterEmail(wrongFormatEmail));
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Enter password", () => loginPage.EnterPassword(validPassword));
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Click login", () => loginPage.ClickLogin());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter invalid format email", () => loginPage.EnterEmail(wrongFormatEmail));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter password", () => loginPage.EnterPassword(validPassword));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Click login", () => loginPage.ClickLogin());
 
             string validationMsg = loginPage.GetEmailValidationMessage();
             Assert.That(validationMsg, Is.Not.Empty, "Expected validation message not displayed for invalid email format.");
 
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver, "Login fail with invalid email format", () => { });
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Login fail with invalid email format", () => { });
         }
     }
 }
