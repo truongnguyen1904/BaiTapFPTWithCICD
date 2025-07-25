@@ -9,6 +9,7 @@ using System.Threading;
 public class BaseTest
 {
     protected static ThreadLocal<IWebDriver> driver = new ThreadLocal<IWebDriver>();
+    String browser;
     public IWebDriver Driver => driver.Value;
     private static ExtentTest parentTest;
     protected ThreadLocal<ExtentTest> test = new ThreadLocal<ExtentTest>();
@@ -23,14 +24,20 @@ public class BaseTest
         string className = GetType().Name;
         parentTest = extent.CreateTest(className);
     }
-
     [SetUp]
     public void SetUp()
     {
-        CreateDriver.SetDriver("chrome", "http://automationexercise.com/");
-        driver.Value = CreateDriver.GetDriver(); 
+        string browser = "chrome"; 
+        var args = TestContext.CurrentContext.Test.Arguments;
+        if (args.Length > 0 && args[0] is string)
+        {
+            browser = args[0].ToString().ToLower();
+        }
 
-        string testName = TestContext.CurrentContext.Test.MethodName;
+        CreateDriver.SetDriver(browser, "https://automationexercise.com");
+        driver.Value = CreateDriver.GetDriver();
+
+        string testName = TestContext.CurrentContext.Test.MethodName + $" [{browser}]";
         test.Value = parentTest.CreateNode(testName);
     }
 

@@ -10,7 +10,11 @@ using System.Threading.Tasks;
 
 namespace BaiTapFPT.Tests
 {
-    [TestFixture, Category("ProductWithLogin"), Parallelizable(ParallelScope.All)]
+    [TestFixture("chrome")]
+    [TestFixture("firefox")]
+    [TestFixture("edge")]
+    [Parallelizable(ParallelScope.All)]
+    [Category("ProductWithLogin")]
     internal class ProductTestsWithLogin : BaseTest
     {
         private ProductsPage productsPage;
@@ -21,6 +25,15 @@ namespace BaiTapFPT.Tests
 
         private string key = "Men";
         private int qualiti = 5;
+
+        private readonly string browser;
+
+        public ProductTestsWithLogin(string browser)
+        {
+            this.browser = browser;
+        }
+
+        //protected override string GetBrowser( ) => browser;
 
         [SetUp]
         public void SetUp()

@@ -4,14 +4,25 @@ using NUnit.Framework;
 
 namespace BaiTapFPT.Tests
 {
-    [TestFixture, Category("ProductWithOutLogin"), Parallelizable(ParallelScope.All)]
+    [TestFixture("chrome")]
+    [TestFixture("firefox")]
+    [TestFixture("edge")]
+    [Parallelizable(ParallelScope.All)]
+    [Category("ProductWithOutLogin")]
     public class ProductTestsWithoutLogin : BaseTest
     {
         private ProductsPage productsPage;
         private CartPage cartPage;
         private string key = "Men";
         private int qualiti = 5;
+        private readonly string browser;
 
+        public ProductTestsWithoutLogin(string browser)
+        {
+            this.browser = browser;
+        }
+
+        //protected override string GetBrowser( ) => browser;
         [SetUp]
         public void SetUp()
         {

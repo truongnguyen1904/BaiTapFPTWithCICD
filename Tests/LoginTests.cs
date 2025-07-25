@@ -6,7 +6,11 @@ using OpenQA.Selenium;
 
 namespace BaiTapFPT.Tests
 {
-    [TestFixture, Category("Login"), Parallelizable(ParallelScope.All)]
+    [TestFixture("chrome")]
+    [TestFixture("firefox")]
+    [TestFixture("edge")]
+    [Parallelizable(ParallelScope.All)]
+    [Category("Login")]
     public class LoginTests : BaseTest
     {
         private LoginPage loginPage;
@@ -15,6 +19,14 @@ namespace BaiTapFPT.Tests
         private string wrongPassword = "12345";
         private string wrongFormatEmail = "truong123";
         private string nonValidEmail = "truong1904@gmail.com";
+        private readonly string browser;
+
+        public LoginTests(string browser)
+        {
+            this.browser = browser;
+        }
+
+        //protected override string GetBrowser( ) => browser;
 
         [SetUp]
         public void TestSetUp()

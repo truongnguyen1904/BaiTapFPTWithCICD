@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 using System;
 using System.Threading;
@@ -25,10 +26,13 @@ namespace BaiTapFPT.Drivers
                 case "firefox":
                     driver.Value = InitFirefoxDriver(appURL);
                     break;
+                case "edge":
+                    driver.Value = InitEdgeDriver(appURL);
+                    break;
                 
                 default:
                     Console.WriteLine("Browser is not supported. Opening Chrome by default.");
-                    driver.Value = InitFirefoxDriver(appURL);
+                    driver.Value = InitChromeDriver(appURL);
                     break;
             }
         }
@@ -48,6 +52,18 @@ namespace BaiTapFPT.Drivers
             localDriver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
             localDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             return localDriver;
+        }
+        private static IWebDriver InitEdgeDriver(string appURL)
+        {
+            var options = new EdgeOptions();
+            options.AddArgument("start-maximized");
+
+            var service = EdgeDriverService.CreateDefaultService(
+                @"C:\Users\HP\Downloads\BaiTapFPT\BaiTapFPT\driver");
+
+            var localDriver = new EdgeDriver(service, options);
+            localDriver.Navigate().GoToUrl(appURL);
+             return localDriver;
         }
 
         private static IWebDriver InitFirefoxDriver(string appURL)

@@ -7,7 +7,13 @@ using System;
 
 namespace BaiTapFPT.Tests
 {
-    [TestFixture, Category("Cart"), Parallelizable(ParallelScope.All)]
+    //Chay mot tesst voi nhieu trinh duyet khac nhau
+    //[TestFixture("chrome")]
+    //[TestFixture("firefox")]
+    //[TestFixture("edge")]
+    [TestFixture]
+    //[Parallelizable(ParallelScope.All)]
+    [Category("Cart")]
     public class CartTestsWithLogin : BaseTest
     {
         private LoginPage loginPage;
@@ -16,14 +22,15 @@ namespace BaiTapFPT.Tests
 
         private const string validEmail = "truongnguyen190404@gmail.com";
         private const string validPassword = "123456";
+        //private readonly string browser;
 
-        [SetUp]
-        public void TestSetUp()
-        {
-            loginPage = new LoginPage(driver.Value);
-            productsPage = new ProductsPage(driver.Value);
-            cartPage = new CartPage(driver.Value);
-        }
+        //public CartTestsWithLogin(string browser)
+        //{
+        //    this.browser = browser;
+        //}
+
+        //protected override string GetBrowser() => browser;
+
 
         private void LoginWithValidCredentials()
         {
@@ -38,34 +45,54 @@ namespace BaiTapFPT.Tests
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Login successful", () => { });
             HideBottomAdBanner();
         }
-
         [Test]
-        public void DeleteProductFromCart()
+        [Parallelizable(ParallelScope.All)]
+        [TestCase("firefox")]
+        [TestCase("edge")]
+        public void DeleteProductFromCart(string browser)
         {
-            LoginWithValidCredentials();
+            //// 1. Khởi tạo trình duyệt theo browser
+            //CreateDriver.SetDriver(browser, "https://automationexercise.com");
+            //driver.Value = CreateDriver.GetDriver();
 
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Product Page", () => productsPage.OpenProductPage());
+
+            // 2. Tạo Page object
+            var loginPage = new LoginPage(driver.Value);
+            var productsPage = new ProductsPage(driver.Value);
+            var cartPage = new CartPage(driver.Value);
+
+            // 3. Đăng nhập
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter valid email", () => loginPage.EnterEmail("truongnguyen190404@gmail.com"));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter valid password", () => loginPage.EnterPassword("123456"));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Click login", () => loginPage.ClickLogin());
+            Assert.That(loginPage.GetLoggedInText(), Does.Contain("Logged in as"));
             HideBottomAdBanner();
 
+            // 4. Test thêm sản phẩm, xóa...
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Product Page", () => productsPage.OpenProductPage());
+            HideBottomAdBanner();
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Click add to cart", () => productsPage.ClickAddToCart());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open cart", () => productsPage.ClickViewCart());
-
             Assert.That(cartPage.IsProductInCart(), "Product not found in cart after adding.");
-
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Delete product from cart", () => cartPage.DeleteQuantity());
-
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Navigate to Home page", () => cartPage.OpenHome());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Reopen cart page", () => cartPage.ClickViewCart());
-
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Verify product is removed", () =>
             {
                 bool isRemoved = cartPage.WaitUntilProductIsRemoved("Blue Top");
                 Assert.That(isRemoved, "Product 'Blue Top' is still in cart after deletion.");
             });
+
+            // 5. Đóng trình duyệt
+            CreateDriver.QuitDriver(driver.Value);
         }
 
         [Test]
-        public void ProceedToCheckout()
+        [Parallelizable(ParallelScope.All)]
+        [TestCase("firefox")]
+        [TestCase("edge")]
+        public void ProceedToCheckout(String browser)
         {
             LoginWithValidCredentials();
 
@@ -94,8 +121,15 @@ namespace BaiTapFPT.Tests
         }
 
         [Test]
-        public void DeleteAllProductsFromCart()
+        [Parallelizable(ParallelScope.All)]
+        [TestCase("firefox")]
+        [TestCase("edge")]
+        public void DeleteAllProductsFromCart(String browser)
         {
+            // 2. Tạo Page object
+            var loginPage = new LoginPage(driver.Value);
+            var productsPage = new ProductsPage(driver.Value);
+            var cartPage = new CartPage(driver.Value);
             LoginWithValidCredentials();
 
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Product Page", () => productsPage.OpenProductPage());

@@ -6,13 +6,24 @@ using System;
 
 namespace BaiTapFPT.Tests
 {
-    [TestFixture, Category("Signup"), Parallelizable(ParallelScope.All)]
+    [TestFixture("chrome")]
+    [TestFixture("firefox")]
+    [TestFixture("edge")]
+    [Parallelizable(ParallelScope.All)]
+    [Category("Signup")]
     public class SignupTests : BaseTest
     {
         private SignupPage signupPage;
         private SignupDetailsPage detailsPage;
         private SignupModel user;
+        private readonly string browser;
 
+        public SignupTests(string browser)
+        {
+            this.browser = browser;
+        }
+
+        //protected override string GetBrowser() => browser;
         [SetUp]
         public void TestSetUp()
         {
