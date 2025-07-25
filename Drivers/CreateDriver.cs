@@ -40,6 +40,10 @@ namespace BaiTapFPT.Drivers
         private static IWebDriver InitChromeDriver(string appURL)
         {
             var options = new ChromeOptions();
+            options.AddArgument("--headless=new");
+            options.AddArgument("--disable-gpu");
+            options.AddArgument("--no-sandbox");
+            options.AddArgument("--disable-dev-shm-usage");
             options.AddArgument("start-maximized");
 
             var chromeDriverService = ChromeDriverService.CreateDefaultService(
@@ -48,6 +52,7 @@ namespace BaiTapFPT.Drivers
             Console.WriteLine("Open Chrome");
 
             var localDriver = new ChromeDriver(chromeDriverService, options);
+            localDriver.Manage().Window.Maximize();
             localDriver.Navigate().GoToUrl(appURL);
             localDriver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
             localDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
@@ -56,14 +61,31 @@ namespace BaiTapFPT.Drivers
         private static IWebDriver InitEdgeDriver(string appURL)
         {
             var options = new EdgeOptions();
-            options.AddArgument("start-maximized");
+
+            // Auto enable headless if running in Jenkins
+            if (Environment.GetEnvironmentVariable("JENKINS_HOME") != null)
+            {
+                options.AddArgument("--headless=new");
+                options.AddArgument("--disable-gpu");
+                options.AddArgument("--no-sandbox");
+                options.AddArgument("--disable-dev-shm-usage");
+                Console.WriteLine("Open Edge in headless mode (Jenkins)");
+            }
+            else
+            {
+                Console.WriteLine("Open Edge with GUI (local)");
+            }
 
             var service = EdgeDriverService.CreateDefaultService(
                 @"C:\Users\HP\Downloads\BaiTapFPT\BaiTapFPT\driver");
 
             var localDriver = new EdgeDriver(service, options);
+            localDriver.Manage().Window.Maximize();
             localDriver.Navigate().GoToUrl(appURL);
-             return localDriver;
+            localDriver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
+            localDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+
+            return localDriver;
         }
 
         private static IWebDriver InitFirefoxDriver(string appURL)
@@ -71,6 +93,8 @@ namespace BaiTapFPT.Drivers
             Console.WriteLine("Open Firefox");
 
             var profile = new FirefoxProfile();
+
+        
             profile.SetPreference("network.proxy.type", 0);
 
             var options = new FirefoxOptions
@@ -78,13 +102,17 @@ namespace BaiTapFPT.Drivers
                 Profile = profile
             };
 
-            var localDriver = new FirefoxDriver(options);
+          var service = FirefoxDriverService.CreateDefaultService(@"C:\Users\HP\Downloads\BaiTapFPT\BaiTapFPT\driver"); // Thư mục chứa geckodriver.exe
+
+            var localDriver = new FirefoxDriver(service, options); 
+
             localDriver.Manage().Window.Maximize();
             localDriver.Navigate().GoToUrl(appURL);
             localDriver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
             localDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             return localDriver;
         }
+
 
         public static void QuitDriver(IWebDriver driver)
         {

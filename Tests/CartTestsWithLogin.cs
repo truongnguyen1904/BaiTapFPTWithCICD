@@ -34,6 +34,10 @@ namespace BaiTapFPT.Tests
 
         private void LoginWithValidCredentials()
         {
+            var loginPage = new LoginPage(driver.Value);
+            var productsPage = new ProductsPage(driver.Value);
+            var cartPage = new CartPage(driver.Value);
+
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter valid email", () => loginPage.EnterEmail(validEmail));
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter valid password", () => loginPage.EnterPassword(validPassword));
@@ -51,25 +55,14 @@ namespace BaiTapFPT.Tests
         [TestCase("edge")]
         public void DeleteProductFromCart(string browser)
         {
-            //// 1. Khởi tạo trình duyệt theo browser
-            //CreateDriver.SetDriver(browser, "https://automationexercise.com");
-            //driver.Value = CreateDriver.GetDriver();
 
-
-            // 2. Tạo Page object
             var loginPage = new LoginPage(driver.Value);
             var productsPage = new ProductsPage(driver.Value);
             var cartPage = new CartPage(driver.Value);
 
-            // 3. Đăng nhập
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter valid email", () => loginPage.EnterEmail("truongnguyen190404@gmail.com"));
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter valid password", () => loginPage.EnterPassword("123456"));
-            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Click login", () => loginPage.ClickLogin());
-            Assert.That(loginPage.GetLoggedInText(), Does.Contain("Logged in as"));
-            HideBottomAdBanner();
 
-            // 4. Test thêm sản phẩm, xóa...
+            LoginWithValidCredentials();
+
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Product Page", () => productsPage.OpenProductPage());
             HideBottomAdBanner();
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Click add to cart", () => productsPage.ClickAddToCart());
