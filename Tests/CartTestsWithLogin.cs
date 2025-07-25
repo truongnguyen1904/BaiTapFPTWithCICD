@@ -14,7 +14,7 @@ namespace BaiTapFPT.Tests
     [TestFixture]
     //[Parallelizable(ParallelScope.All)]
     [Category("Cart")]
-    public class CartTestsWithLogin :BaseTest
+    public class CartTestsWithLogin :BaseTestFortestCase
     {
        
 
@@ -29,7 +29,6 @@ namespace BaiTapFPT.Tests
 
         //protected override string GetBrowser() => browser;
 
-        public CartTestsWithLogin(string browser) : base(browser) { }
 
         private void LoginWithValidCredentials()
         {
@@ -50,6 +49,8 @@ namespace BaiTapFPT.Tests
         [Parallelizable(ParallelScope.All)]
         [TestCase("firefox")]
         [TestCase("edge")]
+        [TestCase("chrome")]
+
         public void DeleteProductFromCart(string browser)
         {
 
@@ -81,6 +82,8 @@ namespace BaiTapFPT.Tests
         [Parallelizable(ParallelScope.All)]
         [TestCase("firefox")]
         [TestCase("edge")]
+        [TestCase("chrome")]
+
         public void ProceedToCheckout(String browser)
         {
             var productsPage = new ProductsPage(driver.Value);
@@ -115,6 +118,8 @@ namespace BaiTapFPT.Tests
         [Test]
         [Parallelizable(ParallelScope.All)]
         [TestCase("firefox")]
+        [TestCase("chrome")]
+
         [TestCase("edge")]
         public void DeleteAllProductsFromCart(String browser)
         {

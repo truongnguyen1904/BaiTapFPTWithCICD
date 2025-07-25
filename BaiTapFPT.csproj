@@ -550,6 +550,7 @@
     <Compile Include="Pages\SignupPage.cs" />
     <Compile Include="Reports\ExtentReportManager.cs" />
     <Compile Include="Tests\BaseTest.cs" />
+    <Compile Include="Tests\BaseTestForTestCase.cs" />
     <Compile Include="Tests\CartTestsWithLogin.cs" />
     <Compile Include="Tests\LoginTests.cs" />
     <Compile Include="Tests\ProductTestsWithLogin.cs" />
