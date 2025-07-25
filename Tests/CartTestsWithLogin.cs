@@ -14,12 +14,14 @@ namespace BaiTapFPT.Tests
     [TestFixture]
     //[Parallelizable(ParallelScope.All)]
     [Category("Cart")]
-    public class CartTestsWithLogin :BaseTestFortestCase
+    public class CartTestsWithLogin :BaseTest
     {
        
 
         private const string validEmail = "truongnguyen190404@gmail.com";
         private const string validPassword = "123456";
+        public CartTestsWithLogin(string browser) : base(browser) { }
+
         //private readonly string browser;
 
         //public CartTestsWithLogin(string browser)

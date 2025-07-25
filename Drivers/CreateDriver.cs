@@ -64,10 +64,16 @@ namespace BaiTapFPT.Drivers
 
             if (Environment.GetEnvironmentVariable("JENKINS_HOME") != null)
             {
-                options.AddArgument("--headless=new");
+                options.AddArgument("--headless=new"); 
                 options.AddArgument("--disable-gpu");
                 options.AddArgument("--no-sandbox");
                 options.AddArgument("--disable-dev-shm-usage");
+                options.AddArgument("--remote-debugging-port=9222"); 
+                options.AddArgument("--disable-extensions");
+                options.AddArgument("--disable-background-networking");
+                options.AddArgument("--disable-infobars");
+                options.AddArgument("--disable-browser-side-navigation");
+                options.AddArgument("--window-size=1920,1080"); 
                 Console.WriteLine("Open Edge in headless mode (Jenkins)");
             }
             else
@@ -78,8 +84,19 @@ namespace BaiTapFPT.Drivers
             var service = EdgeDriverService.CreateDefaultService(
                 @"C:\Users\HP\Downloads\BaiTapFPT\BaiTapFPT\driver");
 
+            service.HideCommandPromptWindow = true;
+
             var localDriver = new EdgeDriver(service, options);
-            localDriver.Manage().Window.Maximize();
+
+            try
+            {
+                localDriver.Manage().Window.Size = new System.Drawing.Size(1920, 1080);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed to resize window: " + ex.Message);
+            }
+
             localDriver.Navigate().GoToUrl(appURL);
             localDriver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
             localDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
