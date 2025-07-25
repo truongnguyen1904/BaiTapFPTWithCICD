@@ -62,7 +62,6 @@ namespace BaiTapFPT.Drivers
         {
             var options = new EdgeOptions();
 
-            // Auto enable headless if running in Jenkins
             if (Environment.GetEnvironmentVariable("JENKINS_HOME") != null)
             {
                 options.AddArgument("--headless=new");

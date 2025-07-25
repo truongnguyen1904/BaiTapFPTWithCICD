@@ -11,28 +11,22 @@ namespace BaiTapFPT.Tests
     [Category("ProductWithOutLogin")]
     public class ProductTestsWithoutLogin : BaseTest
     {
-        private ProductsPage productsPage;
-        private CartPage cartPage;
+        //private ProductsPage productsPage;
+        //private CartPage cartPage;
         private string key = "Men";
         private int qualiti = 5;
         private readonly string browser;
 
-        public ProductTestsWithoutLogin(string browser)
-        {
-            this.browser = browser;
-        }
+        public ProductTestsWithoutLogin(string browser) : base(browser) { }
 
         //protected override string GetBrowser( ) => browser;
-        [SetUp]
-        public void SetUp()
-        {
-            productsPage = new ProductsPage(driver.Value);
-            cartPage = new CartPage(driver.Value);
-        }
+
 
         [Test]
         public void AddProduct()
         {
+            var productsPage = new ProductsPage(driver.Value);
+            var cartPage = new CartPage(driver.Value);
             HideBottomAdBanner();
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Product Page", () => productsPage.OpenProductPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Click add to cart", () => productsPage.ClickAddToCart());
@@ -47,6 +41,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void AddProductDouble()
         {
+            var productsPage = new ProductsPage(driver.Value);
+            var cartPage = new CartPage(driver.Value);
             HideBottomAdBanner();
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Product Page", () => productsPage.OpenProductPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Click add to cart", () => productsPage.ClickAddToCart());
@@ -64,6 +60,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void AddProductByCategory()
         {
+            var productsPage = new ProductsPage(driver.Value);
+            var cartPage = new CartPage(driver.Value);
             HideBottomAdBanner();
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Product Page", () => productsPage.OpenProductPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Select category 'MEN'", () => productsPage.SelectCategory());
@@ -83,6 +81,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void AddProductByBrand()
         {
+            var productsPage = new ProductsPage(driver.Value);
+            var cartPage = new CartPage(driver.Value);
             HideBottomAdBanner();
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Product Page", () => productsPage.OpenProductPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Select brand 'POLO'", () => productsPage.SelectBrand());
@@ -102,6 +102,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void AddProductWhenHover()
         {
+            var productsPage = new ProductsPage(driver.Value);
+            var cartPage = new CartPage(driver.Value);
             HideBottomAdBanner();
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Product Page", () => productsPage.OpenProductPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Hover over product", () => productsPage.HoverProduct());
@@ -117,6 +119,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void SearchProduct()
         {
+            var productsPage = new ProductsPage(driver.Value);
+            var cartPage = new CartPage(driver.Value);
             HideBottomAdBanner();
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Product Page", () => productsPage.OpenProductPage());
             SearchProductWithKeyword(key);
@@ -125,6 +129,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void SearchProductAndAddToCart()
         {
+            var productsPage = new ProductsPage(driver.Value);
+            var cartPage = new CartPage(driver.Value);
             HideBottomAdBanner();
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Product Page", () => productsPage.OpenProductPage());
             SearchProductWithKeyword(key);
@@ -141,6 +147,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void SearchProductThenViewProductAndWriteReview()
         {
+            var productsPage = new ProductsPage(driver.Value);
+            var cartPage = new CartPage(driver.Value);
             HideBottomAdBanner();
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Product Page", () => productsPage.OpenProductPage());
             SearchProductWithKeyword(key);
@@ -154,6 +162,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void SearchProductThenViewProductAndChangeQuantity()
         {
+            var productsPage = new ProductsPage(driver.Value);
+            var cartPage = new CartPage(driver.Value);
             HideBottomAdBanner();
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Product Page", () => productsPage.OpenProductPage());
             SearchProductWithKeyword(key);
@@ -172,6 +182,8 @@ namespace BaiTapFPT.Tests
 
         private void SearchProductWithKeyword(string keyword)
         {
+            var productsPage = new ProductsPage(driver.Value);
+            var cartPage = new CartPage(driver.Value);
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Click search bar", () => productsPage.ClickSearchBar());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, $"Enter keyword '{keyword}'", () => productsPage.SendKeySearchBar(keyword));
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Click search", () => productsPage.SubmitSearch());

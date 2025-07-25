@@ -4,41 +4,53 @@ using BaiTapFPT.Helper;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using System;
+using System.Collections.Concurrent;
 using System.Threading;
 
 public class BaseTest
 {
     protected static ThreadLocal<IWebDriver> driver = new ThreadLocal<IWebDriver>();
-    String browser;
     public IWebDriver Driver => driver.Value;
-    private static ExtentTest parentTest;
+
+    private static ExtentReports extent;
+    protected static ThreadLocal<ExtentTest> parentTest = new ThreadLocal<ExtentTest>(() => null); // tránh null exception
     protected ThreadLocal<ExtentTest> test = new ThreadLocal<ExtentTest>();
 
-    protected ExtentReports extent;
+    protected readonly string browser;
+
+    public BaseTest(string browser)
+    {
+        this.browser = browser.ToLower();
+    }
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
         extent = ExtentReportManager.GetInstance();
-
-        string className = GetType().Name;
-        parentTest = extent.CreateTest(className);
     }
+
+
     [SetUp]
     public void SetUp()
     {
-        string browser = "chrome"; 
-        var args = TestContext.CurrentContext.Test.Arguments;
-        if (args.Length > 0 && args[0] is string)
-        {
-            browser = args[0].ToString().ToLower();
-        }
-
         CreateDriver.SetDriver(browser, "https://automationexercise.com");
         driver.Value = CreateDriver.GetDriver();
 
-        string testName = TestContext.CurrentContext.Test.MethodName + $" [{browser}]";
-        test.Value = parentTest.CreateNode(testName);
+        string parentKey = $"{GetType().Name} [{browser}]";
+
+        if (parentTest.Value == null)
+        {
+            lock (typeof(BaseTest))
+            {
+                if (parentTest.Value == null)
+                {
+                    parentTest.Value = ExtentReportManager.GetInstance().CreateTest(parentKey);
+                }
+            }
+        }
+
+        string testName = TestContext.CurrentContext.Test.MethodName;
+        test.Value = parentTest.Value.CreateNode(testName);
     }
 
     protected void HideBottomAdBanner()

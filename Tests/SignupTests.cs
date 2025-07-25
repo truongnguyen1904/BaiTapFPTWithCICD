@@ -13,22 +13,19 @@ namespace BaiTapFPT.Tests
     [Category("Signup")]
     public class SignupTests : BaseTest
     {
-        private SignupPage signupPage;
-        private SignupDetailsPage detailsPage;
+        //private SignupPage signupPage;
+        //private SignupDetailsPage detailsPage;
         private SignupModel user;
         private readonly string browser;
 
-        public SignupTests(string browser)
-        {
-            this.browser = browser;
-        }
+        public SignupTests(string browser) : base(browser) { }
+
 
         //protected override string GetBrowser() => browser;
         [SetUp]
         public void TestSetUp()
         {
-            signupPage = new SignupPage(driver.Value);
-            detailsPage = new SignupDetailsPage(driver.Value);
+           
             user = new SignupModel
             {
                 Name = "Truong Tester",
@@ -50,6 +47,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void SignupWithValidInfoWithFullFieldDetail()
         {
+            var signupPage = new SignupPage(driver.Value);
+            var detailsPage = new SignupDetailsPage(driver.Value);
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Signup page", () => signupPage.OpenSignupPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter name", () => signupPage.EnterName(user.Name));
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter email", () => signupPage.EnterEmail(user.Email));
@@ -67,6 +66,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void SignupWithValidInfoWithEmptyFieldRequired()
         {
+            var signupPage = new SignupPage(driver.Value);
+            var detailsPage = new SignupDetailsPage(driver.Value);
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Signup page", () => signupPage.OpenSignupPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter name", () => signupPage.EnterName(user.Name));
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter email", () => signupPage.EnterEmail(user.Email));
@@ -85,6 +86,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void SignupWithEmptyName()
         {
+            var signupPage = new SignupPage(driver.Value);
+            var detailsPage = new SignupDetailsPage(driver.Value);
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Signup page", () => signupPage.OpenSignupPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter empty name", () => signupPage.EnterName(""));
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter email", () => signupPage.EnterEmail(user.Email));
@@ -100,6 +103,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void SignupWithEmptyEmail()
         {
+            var signupPage = new SignupPage(driver.Value);
+            var detailsPage = new SignupDetailsPage(driver.Value);
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Signup page", () => signupPage.OpenSignupPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter name", () => signupPage.EnterName(user.Name));
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter empty email", () => signupPage.EnterEmail(""));
@@ -115,6 +120,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void SignupWithInvalidEmailFormat()
         {
+            var signupPage = new SignupPage(driver.Value);
+            var detailsPage = new SignupDetailsPage(driver.Value);
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Signup page", () => signupPage.OpenSignupPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter name", () => signupPage.EnterName(user.Name));
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter invalid email", () => signupPage.EnterEmail("truong123"));
@@ -130,6 +137,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void SignupWithExistingEmail()
         {
+            var signupPage = new SignupPage(driver.Value);
+            var detailsPage = new SignupDetailsPage(driver.Value);
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Signup page", () => signupPage.OpenSignupPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter name", () => signupPage.EnterName(user.Name));
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter existing email", () => signupPage.EnterEmail("truongnguyen1904@gmail.com"));

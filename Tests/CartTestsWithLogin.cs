@@ -14,11 +14,9 @@ namespace BaiTapFPT.Tests
     [TestFixture]
     //[Parallelizable(ParallelScope.All)]
     [Category("Cart")]
-    public class CartTestsWithLogin : BaseTest
+    public class CartTestsWithLogin :BaseTest
     {
-        private LoginPage loginPage;
-        private ProductsPage productsPage;
-        private CartPage cartPage;
+       
 
         private const string validEmail = "truongnguyen190404@gmail.com";
         private const string validPassword = "123456";
@@ -31,13 +29,12 @@ namespace BaiTapFPT.Tests
 
         //protected override string GetBrowser() => browser;
 
+        public CartTestsWithLogin(string browser) : base(browser) { }
 
         private void LoginWithValidCredentials()
         {
             var loginPage = new LoginPage(driver.Value);
-            var productsPage = new ProductsPage(driver.Value);
-            var cartPage = new CartPage(driver.Value);
-
+          
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter valid email", () => loginPage.EnterEmail(validEmail));
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter valid password", () => loginPage.EnterPassword(validPassword));
@@ -56,7 +53,6 @@ namespace BaiTapFPT.Tests
         public void DeleteProductFromCart(string browser)
         {
 
-            var loginPage = new LoginPage(driver.Value);
             var productsPage = new ProductsPage(driver.Value);
             var cartPage = new CartPage(driver.Value);
 
@@ -87,6 +83,9 @@ namespace BaiTapFPT.Tests
         [TestCase("edge")]
         public void ProceedToCheckout(String browser)
         {
+            var productsPage = new ProductsPage(driver.Value);
+            var cartPage = new CartPage(driver.Value);
+
             LoginWithValidCredentials();
 
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Product Page", () => productsPage.OpenProductPage());
@@ -119,8 +118,6 @@ namespace BaiTapFPT.Tests
         [TestCase("edge")]
         public void DeleteAllProductsFromCart(String browser)
         {
-            // 2. Tạo Page object
-            var loginPage = new LoginPage(driver.Value);
             var productsPage = new ProductsPage(driver.Value);
             var cartPage = new CartPage(driver.Value);
             LoginWithValidCredentials();

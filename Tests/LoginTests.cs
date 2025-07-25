@@ -3,9 +3,13 @@ using BaiTapFPT.Helpers;
 using BaiTapFPT.Pages;
 using NUnit.Framework;
 using OpenQA.Selenium;
+using System.Collections.Generic;
+using System.IO;
+
 
 namespace BaiTapFPT.Tests
 {
+
     [TestFixture("chrome")]
     [TestFixture("firefox")]
     [TestFixture("edge")]
@@ -21,22 +25,29 @@ namespace BaiTapFPT.Tests
         private string nonValidEmail = "truong1904@gmail.com";
         private readonly string browser;
 
-        public LoginTests(string browser)
-        {
-            this.browser = browser;
-        }
+        public LoginTests(string browser) : base(browser) { }
+        
 
         //protected override string GetBrowser( ) => browser;
 
-        [SetUp]
-        public void TestSetUp()
+        //[SetUp]
+        //public void TestSetUp()
+        //{
+        //    loginPage = new LoginPage(driver.Value);
+        //}
+        private static string ExcelFilePath => Path.Combine(TestContext.CurrentContext.WorkDirectory, "LoginData.xlsx");
+
+        public static IEnumerable<object[]> LoginTestDataFromExcel()
         {
-            loginPage = new LoginPage(driver.Value);
+            return ExcelDataHelper.ReadExcelData(ExcelFilePath, "Sheet1");
         }
+
 
         [Test]
         public void LoginWithValidAccount()
         {
+            var loginPage = new LoginPage(driver.Value); 
+
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter email", () => loginPage.EnterEmail(validEmail));
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter password", () => loginPage.EnterPassword(validPassword));
@@ -51,6 +62,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void LoginWithWrongPassword()
         {
+            var loginPage = new LoginPage(driver.Value);
+
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter email", () => loginPage.EnterEmail(validEmail));
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter wrong password", () => loginPage.EnterPassword(wrongPassword));
@@ -65,6 +78,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void LoginWithEmptyPassword()
         {
+            var loginPage = new LoginPage(driver.Value);
+
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter email", () => loginPage.EnterEmail(validEmail));
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter empty password", () => loginPage.EnterPassword(""));
@@ -79,6 +94,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void LoginWithEmptyEmail()
         {
+            var loginPage = new LoginPage(driver.Value);
+
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter email empty", () => loginPage.EnterEmail(""));
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter password", () => loginPage.EnterPassword(validPassword));
@@ -93,6 +110,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void LoginWithNonRegisteredEmail()
         {
+            var loginPage = new LoginPage(driver.Value);
+
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter non registered email", () => loginPage.EnterEmail(nonValidEmail));
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter password", () => loginPage.EnterPassword(validPassword));
@@ -107,6 +126,8 @@ namespace BaiTapFPT.Tests
         [Test]
         public void LoginWithInvalidEmailFormat()
         {
+            var loginPage = new LoginPage(driver.Value);
+
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter invalid format email", () => loginPage.EnterEmail(wrongFormatEmail));
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter password", () => loginPage.EnterPassword(validPassword));
@@ -116,6 +137,30 @@ namespace BaiTapFPT.Tests
             Assert.That(validationMsg, Is.Not.Empty, "Expected validation message not displayed for invalid email format.");
 
             TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Login fail with invalid email format", () => { });
+        }
+
+        [Test, TestCaseSource(nameof(LoginTestDataFromExcel))]
+        public void LoginWithExcelData(string email, string password)
+        {
+            var loginPage = new LoginPage(driver.Value);
+
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Open Login page", () => loginPage.OpenLoginPage());
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, $"Enter email {email}", () => loginPage.EnterEmail(email));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Enter password", () => loginPage.EnterPassword(password));
+            TestHelper.CaptureStepAndScreenshot(test.Value, driver.Value, "Click login", () => loginPage.ClickLogin());
+
+            string actualText = loginPage.GetLoggedInText();
+            if (actualText.Contains("Logged in as"))
+            {
+                test.Value.Info("Login successful with: " + email);
+                Assert.Pass();
+            }
+            else
+            {
+                string errorMsg = loginPage.GetErrorMessage();
+                test.Value.Warning("Login failed: " + errorMsg);
+                Assert.Fail("Login failed with email: " + email);
+            }
         }
     }
 }
